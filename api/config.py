@@ -1,6 +1,6 @@
 DB = {
     "HOST": "localhost",
     "USER": "root",
-    "PASSWORD": "",
+    "PASSWORD": "ta34RR17",
     "NAME": "questions",
 }
