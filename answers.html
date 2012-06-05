@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Answers</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="static/css/libs/bootstrap.css" rel="stylesheet">
+    <link href="static/css/libs/bootstrap-responsive.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div id="answers-app" class="container">
+        <h2>Answers</h2>
+        <form class="row well">
+            <div class="alert alert-success hidden">
+                The answers have been saved successfully.
+            </div>
+            <ol id="answers-list"></ol>
+
+            <div class="form-actions">
+                <button class="btn btn-primary submit" type="submit">Submit answers</button>
+            </div>
+          </form>
+    </div>
+
+    <script src="static/js/libs/json2.js"></script>
+    <script src="static/js/libs/jquery.js"></script>
+    <script src="static/js/libs/underscore.js"></script>
+    <script src="static/js/libs/backbone.js"></script>    
+    <script src="static/js/models.js"></script>
+    <script src="static/js/answers_views.js"></script>
+
+    <!-- Templates -->
+    <script type="text/template" id="answer-item-template">
+        <p><%= text %></p>
+        <fieldset class="control-group">
+            <textarea class="span4 answer" data-question="<%= id %>" rows="1" cols="50"></textarea>
+            <span class="help-inline hidden">Please enter your answer.</span>
+        </fieldset>
+    </script>
+</body>
+</html>

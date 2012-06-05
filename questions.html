@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Questions</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="static/css/libs/bootstrap.css" rel="stylesheet">
+    <link href="static/css/libs/bootstrap-responsive.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div id="questions-app" class="container">
+        <div class="row">
+            <h2>Questions</h2>
+            <ol id="questions-list"></ol>
+        </div>
+
+        <div class="row">
+            <h2>Add question</h2>
+            <fieldset class="control-group">
+                <textarea class="span4" id="new-question" rows="1" cols="50"></textarea>
+            </textarea>
+            <button id="new-question-add" class="btn btn-primary" type="button">Add</button>
+        </div>
+    </div>
+
+    <script src="static/js/libs/jquery.js"></script>
+    <script src="static/js/libs/underscore.js"></script>
+    <script src="static/js/libs/backbone.js"></script>    
+    <script src="static/js/models.js"></script>
+    <script src="static/js/questions_views.js"></script>
+
+    <!-- Templates -->
+    <script type="text/template" id="question-item-template">
+        <textarea class="span4 edit" rows="1" cols="50"><%= text %></textarea>
+        <button class="btn btn-primary save" type="button">Save</button>
+        <button class="btn btn-danger delete" type="button">Remove</button>
+    </script>
+</body>
+</html>
