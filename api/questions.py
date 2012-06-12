@@ -17,7 +17,7 @@ def get_questions():
 def add_question():
     text = request.json['text']
     cursor = db.cursor()
-    cursor.execute("insert into `questions` (`text`) values ('%s')" % text)
+    cursor.execute("insert into `questions` (`text`) values (%(text)s)", {'text': text})
     id = db.insert_id()
     cursor.close()
     db.commit()
@@ -26,7 +26,7 @@ def add_question():
 @route('/questions/:id', method='DELETE')
 def delete_question(id):
     cursor = db.cursor()
-    cursor.execute("delete from `questions` where `id`='%d'" % int(id))
+    cursor.execute("delete from `questions` where `id`=%(id)s", {'id': id})
     cursor.close()
     db.commit()
     return ""
@@ -35,7 +35,7 @@ def delete_question(id):
 def update_question(id):
     text = request.json['text']
     cursor = db.cursor()
-    cursor.execute("update `questions` set `text`='%s' where `id`='%d'" % (text, int(id)))
+    cursor.execute("update `questions` set `text`=%(text)s where `id`=%(id)s", {'text': text, 'id': id})
     cursor.close()
     db.commit()
     return json.dumps({"id": id, "text": text})
@@ -45,7 +45,7 @@ def submit_answers():
     answers = request.json["answers"]
     cursor = db.cursor()
     for answer in answers:
-        cursor.execute("insert into `answers` (`question`, `text`) values ('%d', '%s')" % (answer["id"], answer["text"]))
+        cursor.execute("insert into `answers` (`question`, `text`) values (%(answer)s, %(text)s)", {'answer': answer["id"], 'text': answer["text"]})
     cursor.close()
     db.commit()
     return ""

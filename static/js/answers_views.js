@@ -7,11 +7,26 @@ $(function() {
 
         template: _.template($('#answer-item-template').html()),
 
+        events: {
+            "keyup .answer"  : "update",
+        },
+
         render: function() {
             this.$el.html(this.template(this.model.toJSON()));
-            this.input = this.$('.edit');
+            this.input = this.$('.answer');
+            this.$(".chars-left").html(250 - this.input.val().length + ' characters left');
             return this;
         },
+
+        update: function() {
+            var value = this.input.val();
+            if (value.length > 250) {
+                value = value.substr(0, 250);
+                this.input.val(value);
+            }
+            this.$(".chars-left").html(250 - value.length + ' characters left');
+            if (value.length > 0) this.$(".control-group").removeClass("error").find(".help-inline").addClass("hidden");
+        }
     });
 
     var AnswersApp = Backbone.View.extend({

@@ -8,8 +8,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="static/css/libs/bootstrap.css" rel="stylesheet">
-    <link href="static/css/libs/bootstrap-responsive.css" rel="stylesheet">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,31 +17,38 @@
 </head>
 <body>
     <div id="questions-app" class="container">
-        <div class="row">
-            <h2>Questions</h2>
+        <div class="row well">
+            <h2>What questions do you want applicants to your job to answer?</h2>
+            <p>Note: Asking more questions will increase the time and effort it takes to apply to your job.</p>
             <ol id="questions-list"></ol>
+            <button class="btn btn-primary save-questions" type="button"><i class="icon-ok icon-white"></i> Save questions</button>
         </div>
 
-        <div class="row">
+        <div class="row well">
             <h2>Add question</h2>
             <fieldset class="control-group">
-                <textarea class="span4" id="new-question" rows="1" cols="50"></textarea>
-            </textarea>
-            <button id="new-question-add" class="btn btn-primary" type="button">Add</button>
+                <div>
+                    <textarea class="new-question span5" rows="2" cols="50"></textarea>
+                    <button class="new-question-add btn btn-primary" type="button"><i class="icon-ok icon-white"></i> Add</button>
+                </div>
+            </fieldset>
+            Paste typical question:
+            <select class="typical-questions span3">
+            </select>
         </div>
     </div>
 
     <script src="static/js/libs/jquery.js"></script>
     <script src="static/js/libs/underscore.js"></script>
-    <script src="static/js/libs/backbone.js"></script>    
+    <script src="static/js/libs/backbone.js"></script>
+    <script src="static/js/libs/bootstrap.js"></script>
     <script src="static/js/models.js"></script>
     <script src="static/js/questions_views.js"></script>
 
     <!-- Templates -->
     <script type="text/template" id="question-item-template">
-        <textarea class="span4 edit" rows="1" cols="50"><%= text %></textarea>
-        <button class="btn btn-primary save" type="button">Save</button>
-        <button class="btn btn-danger delete" type="button">Remove</button>
+        <textarea class="span5 edit" rows="2" cols="50"><%= text %></textarea>
+        <button class="btn btn-danger delete" type="button" title="Remove"><i class="icon-remove icon-white"></i></button>
     </script>
 </body>
 </html>

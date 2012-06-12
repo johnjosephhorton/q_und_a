@@ -9,7 +9,7 @@ $(function() {
 
         events: {
             "click .delete" : "clear",
-            "click .save"  : "save",
+            "change .edit"  : "update",
         },
 
         initialize: function() {
@@ -22,14 +22,28 @@ $(function() {
             this.input = this.$('.edit');
             return this;
         },
+        
+        make: function(tagName, attributes, content) {
+          var el = document.createElement(tagName);
+          if (attributes) $(el).attr(attributes);
+          $(el).hide();
+          if (content != null) $(el).html(content);
+          if (!this.model.id) $(el).show('slow'); else $(el).show();
+          return el;
+        },
+        
+        remove: function() {
+            this.$el.hide('slow');
+        },
 
-        save: function() {
+        update: function() {
             var value = this.input.val();
-            this.model.save({text: value});
+            this.model.set({text: value}, {silent: true});
         },
 
         clear: function() {
-            this.model.clear();
+            if (_.indexOf(typical_questions, this.model.get("text")) != -1 || confirm("Do you want to remove this question?"))
+                this.model.clear();
         }
     });
 
@@ -38,15 +52,35 @@ $(function() {
         el: $("#questions-app"),
 
         events: {
-            "click #new-question-add":  "addQuestion",
-            "blur #new-question": "checkText",
+            "click .new-question-add":  "addQuestion",
+            "click .typical-questions option": "pasteTypicalQuestion",
+            "click .save-questions": "saveQuestions",
         },
 
         initialize: function() {
-            this.input = this.$("#new-question");
+            this.input = this.$(".new-question");
             Questions.bind('add', this.addOne, this);
             Questions.bind('reset', this.addAll, this);
-            Questions.fetch();
+            Questions.fetch({success: function() {
+                // add random typical question, if list is empty
+                if (Questions.length == 0) {
+                    var options = typical_questions;
+                    for (var i=0; i<suggest_num_typical_questions; i++) {
+                        options = _.shuffle(options);
+                        var text = options.pop();
+                        Questions.create({text: text});
+                    }
+                }
+            }});
+            
+            // prepare typical questions
+            var typical_options = "";
+            for (var i=0; i<typical_questions.length; i++) {
+                typical_options += "<option>" + typical_questions[i] + "</option>";
+            }
+            this.$(".typical-questions").html(typical_options);
+
+            this.$('.new-question').typeahead({source: typical_questions});
         },
 
         addOne: function(question) {
@@ -67,9 +101,21 @@ $(function() {
             this.input.val("");
         },
 
-        checkText: function(e) {
-            if (this.input.val()) this.input.parents("fieldset").removeClass("error");
+        pasteTypicalQuestion: function(e) {
+            var new_text = this.$(".typical-questions").val();
+            var current_text = this.$(".new-question").val();
+            if (current_text == "" || _.indexOf(typical_questions, current_text) != -1)
+                this.$(".new-question").val(new_text);
+            else if (confirm("Do you want to replace the current question?"))
+                this.$(".new-question").val(new_text);
             return;
+        },
+        
+        saveQuestions: function() {
+            Questions.each(function(question){ 
+                if ("text" in question.changed)
+                    question.save();
+            });
         }
     });
 

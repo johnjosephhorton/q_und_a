@@ -8,8 +8,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="static/css/libs/bootstrap.css" rel="stylesheet">
-    <link href="static/css/libs/bootstrap-responsive.css" rel="stylesheet">
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <link href="static/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -34,6 +34,7 @@
     <script src="static/js/libs/jquery.js"></script>
     <script src="static/js/libs/underscore.js"></script>
     <script src="static/js/libs/backbone.js"></script>    
+    <script src="static/js/libs/bootstrap.js"></script>    
     <script src="static/js/models.js"></script>
     <script src="static/js/answers_views.js"></script>
 
@@ -41,8 +42,9 @@
     <script type="text/template" id="answer-item-template">
         <p><%= text %></p>
         <fieldset class="control-group">
-            <textarea class="span4 answer" data-question="<%= id %>" rows="1" cols="50"></textarea>
+            <textarea class="span5 answer" data-question="<%= id %>" rows="2" cols="50"></textarea>
             <span class="help-inline hidden">Please enter your answer.</span>
+            <div class="chars-left"></div>
         </fieldset>
     </script>
 </body>
