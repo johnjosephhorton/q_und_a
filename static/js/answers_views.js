@@ -80,21 +80,23 @@ $(function() {
 
         routes: {
             "project/:id": "project",
+            "*any": "default_project",
         },
 
         project: function(id) {
-            $("project_id").val(id);
+            project_id.val(id);
             Questions.url = "/api/questions/" + id;
             Questions.fetch();
 
             $(".alert").addClass("hidden");
         },
 
+        default_project: function() {
+            this.navigate("project/1", {trigger: true})
+        }
     });
+
     var Route = new Workspace;
     Backbone.history.start();
-    if (!project_id.val())
-        Route.navigate("project/1", {trigger: true});
-
     var App = new AnswersApp;
 });

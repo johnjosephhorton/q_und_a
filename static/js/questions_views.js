@@ -132,6 +132,7 @@ $(function() {
 
         routes: {
             "project/:id": "project",
+            "*any": "default_project",
         },
 
         project: function(id) {
@@ -146,18 +147,20 @@ $(function() {
                         var text = options.pop();
                         Questions.create({text: text});
                     }
+                    $(".alert").addClass("hidden");
                 }
             }});
 
             $(".answers-link").attr("href", "answers.html#project" + id);
             $(".alert").addClass("hidden");
+        },
+
+        default_project: function() {
+            this.navigate("project/1", {trigger: true})
         }
     });
 
     var Route = new Workspace;
     Backbone.history.start();
-    if (!project_id.val())
-        Route.navigate("project/1", {trigger: true});
-
     var App = new QuestionsApp;
 });
