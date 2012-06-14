@@ -151,7 +151,7 @@ $(function() {
                 }
             }});
 
-            $(".answers-link").attr("href", "answers.html#project" + id);
+            $(".answers-link").attr("href", "answers.html#project/" + id);
             $(".alert").addClass("hidden");
         },
 
