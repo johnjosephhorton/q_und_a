@@ -1,6 +1,4 @@
 $(function() {
-    var Questions = new QuestionList;
-
     var AnswersView = Backbone.View.extend({
 
         tagName:  "li",
@@ -40,7 +38,6 @@ $(function() {
         initialize: function() {
             Questions.bind('add', this.addOne, this);
             Questions.bind('reset', this.addAll, this);
-            Questions.fetch();
         },
 
         addOne: function(question) {
@@ -49,6 +46,7 @@ $(function() {
         },
 
         addAll: function() {
+            this.$("#answers-list").html("");
             Questions.each(this.addOne);
         },
 
@@ -62,7 +60,7 @@ $(function() {
                 }
             });
             if (!filled) return false;
-            
+
             var answers = [];
             this.$("#answers-list .answer").each(function() {
                 answers.push({"id": $(this).data("question"), "text": $(this).val()});
@@ -74,6 +72,29 @@ $(function() {
             return false;
         }
     });
+
+    var project_id = $("#project_id");
+    var Questions = new QuestionList;
+
+    var Workspace = Backbone.Router.extend({
+
+        routes: {
+            "project/:id": "project",
+        },
+
+        project: function(id) {
+            $("project_id").val(id);
+            Questions.url = "/api/questions/" + id;
+            Questions.fetch();
+
+            $(".alert").addClass("hidden");
+        },
+
+    });
+    var Route = new Workspace;
+    Backbone.history.start();
+    if (!project_id.val())
+        Route.navigate("project/1", {trigger: true});
 
     var App = new AnswersApp;
 });

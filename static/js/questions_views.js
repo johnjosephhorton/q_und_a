@@ -1,6 +1,4 @@
 $(function() {
-    var Questions = new QuestionList;
-
     var QuestionView = Backbone.View.extend({
 
         tagName:  "li",
@@ -22,7 +20,7 @@ $(function() {
             this.input = this.$('.edit');
             return this;
         },
-        
+
         make: function(tagName, attributes, content) {
           var el = document.createElement(tagName);
           if (attributes) $(el).attr(attributes);
@@ -31,7 +29,7 @@ $(function() {
           if (!this.model.id) $(el).show('slow'); else $(el).show();
           return el;
         },
-        
+
         remove: function() {
             this.$el.hide('slow');
         },
@@ -53,7 +51,7 @@ $(function() {
 
         events: {
             "click .new-question-add":  "addQuestion",
-            "click .typical-questions option": "pasteTypicalQuestion",
+            "change .typical-questions": "pasteTypicalQuestion",
             "click .save-questions": "saveQuestions",
         },
 
@@ -61,26 +59,29 @@ $(function() {
             this.input = this.$(".new-question");
             Questions.bind('add', this.addOne, this);
             Questions.bind('reset', this.addAll, this);
-            Questions.fetch({success: function() {
-                // add random typical question, if list is empty
-                if (Questions.length == 0) {
-                    var options = typical_questions;
-                    for (var i=0; i<suggest_num_typical_questions; i++) {
-                        options = _.shuffle(options);
-                        var text = options.pop();
-                        Questions.create({text: text});
-                    }
-                }
-            }});
-            
+            Questions.bind('add', this.added, this);
+            Questions.bind('remove', this.removed, this);
+
             // prepare typical questions
-            var typical_options = "";
+            var typical_options = this.$(".typical-questions").html();
             for (var i=0; i<typical_questions.length; i++) {
-                typical_options += "<option>" + typical_questions[i] + "</option>";
+                typical_options += '<option value="' + typical_questions[i] + '">' + typical_questions[i] + '</option>';
             }
             this.$(".typical-questions").html(typical_options);
 
             this.$('.new-question').typeahead({source: typical_questions});
+        },
+
+        added: function() {
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
+                .find("span").hide().end().find(".added").show();
+            this.$(".save-questions").toggle(Questions.length > 0);
+        },
+
+        removed: function() {
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
+                .find("span").hide().end().find(".removed").show();
+            this.$(".save-questions").toggle(Questions.length > 0);
         },
 
         addOne: function(question) {
@@ -89,14 +90,17 @@ $(function() {
         },
 
         addAll: function() {
+            this.$("#questions-list").html("");
             Questions.each(this.addOne);
         },
 
         addQuestion: function(e) {
             if (!this.input.val()) {
                 this.input.parents("fieldset").addClass("error");
+                this.$(".alert").addClass("hidden").end().find(".alert-error").removeClass("hidden");
                 return;
             }
+            this.input.parents("fieldset").removeClass("error");
             Questions.create({text: this.input.val()});
             this.input.val("");
         },
@@ -110,15 +114,50 @@ $(function() {
                 this.$(".new-question").val(new_text);
             return;
         },
-        
+
         saveQuestions: function() {
-            Questions.each(function(question){ 
+            Questions.each(function(question){
                 if ("text" in question.changed)
                     question.save();
             });
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
+                .find("span").hide().end().find(".saved").show();
         }
     });
 
-    var App = new QuestionsApp;
+    var project_id = $("#project_id");
+    var Questions = new QuestionList;
 
+    var Workspace = Backbone.Router.extend({
+
+        routes: {
+            "project/:id": "project",
+        },
+
+        project: function(id) {
+            project_id.val(id);
+            Questions.url = "/api/questions/" + id;
+            Questions.fetch({success: function() {
+                // add random typical question, if list is empty
+                if (Questions.length == 0) {
+                    var options = typical_questions;
+                    for (var i=0; i<suggest_num_typical_questions; i++) {
+                        options = _.shuffle(options);
+                        var text = options.pop();
+                        Questions.create({text: text});
+                    }
+                }
+            }});
+
+            $(".answers-link").attr("href", "answers.html#project" + id);
+            $(".alert").addClass("hidden");
+        }
+    });
+
+    var Route = new Workspace;
+    Backbone.history.start();
+    if (!project_id.val())
+        Route.navigate("project/1", {trigger: true});
+
+    var App = new QuestionsApp;
 });

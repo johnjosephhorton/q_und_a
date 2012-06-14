@@ -17,9 +17,18 @@
 </head>
 <body>
     <div id="questions-app" class="container">
+        <input type="hidden" id="project-id" value="">
         <div class="row well">
             <h2>What questions do you want applicants to your job to answer?</h2>
             <p>Note: Asking more questions will increase the time and effort it takes to apply to your job.</p>
+            <div class="alert alert-success hidden">
+                <span class="added">The answer have been added successfully.</span>
+                <span class="saved">The answers have been saved successfully.</span>
+                <span class="removed">The answer have been removed successfully.</span>
+            </div>
+            <div class="alert alert-error hidden">
+                Please enter text of question.
+            </div>
             <ol id="questions-list"></ol>
             <button class="btn btn-primary save-questions" type="button"><i class="icon-ok icon-white"></i> Save questions</button>
         </div>
@@ -34,7 +43,12 @@
             </fieldset>
             Paste typical question:
             <select class="typical-questions span3">
+                <option value="">Select question</option>
             </select>
+        </div>
+
+        <div>
+            <a class="answers-link" href="answers.html">Answers Form</a>
         </div>
     </div>
 
