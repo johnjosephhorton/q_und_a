@@ -156,7 +156,7 @@ $(function() {
         },
 
         default_project: function() {
-            this.navigate("project/1", {trigger: true})
+            this.navigate("project/1", {trigger: true, replace: true})
         }
     });
 
