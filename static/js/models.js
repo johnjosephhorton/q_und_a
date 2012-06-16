@@ -12,26 +12,20 @@ var typical_questions = [
 ];
 
 var suggest_num_typical_questions = 5;
+var answer_chars_limit = 250;
 
 var Question = Backbone.Model.extend({
 
     defaults: function() {
         return {
-            text: ""
+            text: "",
+            project: 1,
         };
     },
 
     initialize: function() {
-        if (!this.get("text")) {
-            this.set({"text": this.defaults.text});
-        }
-    },
-
-    parse: function(response) {
-        var attrs = {};
-        attrs.id = response.id;
-        attrs.text = response.text;
-        return attrs;
+        if (!this.get("text")) this.set({"text": this.defaults.text});
+        if (!this.get("project")) this.set({"project": this.defaults.project});
     },
 
     clear: function() {
@@ -43,6 +37,35 @@ var Question = Backbone.Model.extend({
 var QuestionList = Backbone.Collection.extend({
 
     model: Question,
-
     url: "/api/questions",
+});
+
+var Answer = Backbone.Model.extend({
+
+    defaults: function() {
+        return {
+            text: "",
+            question: 1,
+            question_text: "",
+            user: 1,
+        };
+    },
+
+    initialize: function() {
+        if (!this.get("text")) this.set({"text": this.defaults.text});
+        if (!this.get("question")) this.set({"question": this.defaults.question});
+        if (!this.get("question_text")) this.set({"question_text": this.defaults.question_text});
+        if (!this.get("user")) this.set({"user": this.defaults.user});
+    },
+
+    clear: function() {
+        this.destroy();
+    }
+});
+
+// Collections
+var AnswerList = Backbone.Collection.extend({
+
+    model: Answer,
+    url: "/api/answers",
 });

@@ -1,4 +1,7 @@
 $(function() {
+    var Questions = new QuestionList;
+    $app = $("#questions-app");
+    
     var QuestionView = Backbone.View.extend({
 
         tagName:  "li",
@@ -47,7 +50,7 @@ $(function() {
 
     var QuestionsApp = Backbone.View.extend({
 
-        el: $("#questions-app"),
+        el: $app,
 
         events: {
             "click .new-question-add":  "addQuestion",
@@ -57,9 +60,8 @@ $(function() {
 
         initialize: function() {
             this.input = this.$(".new-question");
-            Questions.bind('add', this.addOne, this);
-            Questions.bind('reset', this.addAll, this);
             Questions.bind('add', this.added, this);
+            Questions.bind('reset', this.reseted, this);
             Questions.bind('remove', this.removed, this);
 
             // prepare typical questions
@@ -72,26 +74,22 @@ $(function() {
             this.$('.new-question').typeahead({source: typical_questions});
         },
 
-        added: function() {
-            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
-                .find("span").hide().end().find(".added").show();
+        added: function(question) {
+            var view = new QuestionView({model: question});
+            this.$("#questions-list").append(view.render().el);
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden").find("span").hide().end().find(".added").show();
             this.$(".save-questions").toggle(Questions.length > 0);
         },
 
         removed: function() {
-            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
-                .find("span").hide().end().find(".removed").show();
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden").find("span").hide().end().find(".removed").show();
             this.$(".save-questions").toggle(Questions.length > 0);
         },
 
-        addOne: function(question) {
-            var view = new QuestionView({model: question});
-            this.$("#questions-list").append(view.render().el);
-        },
-
-        addAll: function() {
+        reseted: function() {
             this.$("#questions-list").html("");
-            Questions.each(this.addOne);
+            Questions.each(this.added);
+            $(".alert").addClass("hidden");
         },
 
         addQuestion: function(e) {
@@ -101,7 +99,7 @@ $(function() {
                 return;
             }
             this.input.parents("fieldset").removeClass("error");
-            Questions.create({text: this.input.val()});
+            Questions.create({project: $app.data("project"), text: this.input.val()});
             this.input.val("");
         },
 
@@ -116,47 +114,43 @@ $(function() {
         },
 
         saveQuestions: function() {
-            Questions.each(function(question){
+            Questions.each(function(question) {
                 if ("text" in question.changed)
                     question.save();
             });
-            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden")
-                .find("span").hide().end().find(".saved").show();
+            
+            this.$(".alert").addClass("hidden").end().find(".alert-success").removeClass("hidden").find("span").hide().end().find(".saved").show();
         }
     });
-
-    var project_id = $("#project_id");
-    var Questions = new QuestionList;
 
     var Workspace = Backbone.Router.extend({
 
         routes: {
-            "project/:id": "project",
-            "*any": "default_project",
+            "project/:project": "project",
+            "*any": "other",
         },
 
-        project: function(id) {
-            project_id.val(id);
-            Questions.url = "/api/questions/" + id;
-            Questions.fetch({success: function() {
+        project: function(project) {
+            $app.data("project", project);
+            Questions.fetch({data: {project: project}, success: function() {
+                
                 // add random typical question, if list is empty
                 if (Questions.length == 0) {
                     var options = typical_questions;
                     for (var i=0; i<suggest_num_typical_questions; i++) {
                         options = _.shuffle(options);
                         var text = options.pop();
-                        Questions.create({text: text});
+                        Questions.create({project: project, text: text});
                     }
                     $(".alert").addClass("hidden");
                 }
             }});
 
-            $(".answers-link").attr("href", "answers.html#project/" + id);
-            $(".alert").addClass("hidden");
+            $(".answers-link").attr("href", "answers.html#project/" + project + "/user/1");
         },
 
-        default_project: function() {
-            this.navigate("project/1", {trigger: true, replace: true})
+        other: function() {
+            this.navigate("project/1", {trigger: true, replace: true});
         }
     });
 

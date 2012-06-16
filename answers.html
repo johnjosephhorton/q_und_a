@@ -20,7 +20,9 @@
         <form class="row well">
             <h2>Answer the following questions to apply for this job.</h2>
             <div class="alert alert-success hidden">
-                The answers have been saved successfully.
+                <span class="added">The answer have been added successfully.</span>
+                <span class="saved">The answers have been saved successfully.</span>
+                <span class="removed">The answer have been removed successfully.</span>
             </div>
 
             <ol id="answers-list"></ol>
@@ -41,9 +43,9 @@
 
     <!-- Templates -->
     <script type="text/template" id="answer-item-template">
-        <p><%= text %></p>
+        <p><%= question_text %></p>
         <fieldset class="control-group">
-            <textarea class="span5 answer" data-question="<%= id %>" rows="2" cols="50"></textarea>
+            <textarea class="span5 answer" rows="2" cols="50"><%= text %></textarea>
             <span class="help-inline hidden">Please enter your answer.</span>
             <div class="chars-left"></div>
         </fieldset>
